@@ -1,7 +1,4 @@
 /*
- * EECE7376: Operating Systems - Course Project Part 1: Shell
- * name1: Akash Kotagi, name2: Sreenidhi Ramani
- * NUID1: 002586968, NUID2: 002592745
  *
  * Compile: gcc -o myshell myshell.c audit_logger.c
  * Run:     ./myshell
