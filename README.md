@@ -1,7 +1,5 @@
 # OS Security Engineering — POSIX Shell & Security Research
 
-**Authors:** Sreenidhi Ramani & Akash Kotagi  
-**Course:** EECE7376 — Operating Systems, Northeastern University  
 **Language:** C | **Platform:** Linux (POSIX-compliant)
 
 ---
