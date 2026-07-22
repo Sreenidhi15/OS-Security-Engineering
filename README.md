@@ -6,7 +6,7 @@
 
 ## Overview
 
-This project has two components. Part A is a fully functional Unix shell built from scratch in C using only standard POSIX system calls — no external libraries. Part B extends the shell with a security audit logging module mapped to NIST SP 800-53 controls, demonstrating how OS-level primitives translate directly into enterprise security requirements.
+This project has three components. Part A is a fully functional Unix shell built from scratch in C using only standard POSIX system calls — no external libraries. Part B extends the shell with a security audit logging module mapped to NIST SP 800-53 controls. Part C adds working attack and defense demos demonstrating real vulnerabilities with hardened implementations.
 
 ---
 
@@ -39,7 +39,7 @@ This project has two components. Part A is a fully functional Unix shell built f
 gcc -o myshell myshell.c
 
 # With audit logging (recommended)
-gcc -o myshell myshell.c audit/audit_logger.c
+gcc -o myshell myshell.c Audit/audit_logger.c
 
 ./myshell
 ```
@@ -108,25 +108,39 @@ This mapping applies directly to SOC 2 (CC7.2), ISO 27001 (A.12.4), and FedRAMP 
 ### Audit Module Files
 
 ```
-audit/
+Audit/
 ├── audit_logger.h          ← public API
 ├── audit_logger.c          ← implementation with design rationale
 └── shell_audit.log.sample  ← example output including anomalous entries
 ```
 
-See [`audit/README.md`](audit/README.md) for full design rationale and GRC analysis.
+See [`Audit/README.md`](Audit/README.md) for full design rationale and GRC analysis.
 
 ---
 
-## Part C — Coming Next
+## Part C — Attack & Defense Demos
 
-The next phase adds a working **attack and defense demo** covering:
+Working exploit demos with hardened implementations and NIST/CWE mappings, located in `demos/`.
 
-- Command injection vulnerability (CWE-78) — vulnerable vs hardened shell implementation side by side
-- AES mode weakness demo — ECB pattern leakage vs GCM authenticated encryption
-- UID spoofing simulation — NFSv4 Kerberos fallback exploitation and remediation
+### Command Injection (CWE-78)
 
-Each demo is mapped to a NIST SP 800-53 control and a CVE or CWE entry.
+Vulnerable shell using `system()` vs hardened shell using `execvp()`, with a Python exploit script demonstrating four injection payloads — semicolon, AND operator, pipe, and subshell injection. Maps to NIST SI-10.
+
+```bash
+gcc -o vuln_shell demos/vuln_shell.c
+gcc -o safe_shell demos/safe_shell.c
+python3 demos/exploit_demo.py
+```
+
+### UID Spoofing — NFSv4 Kerberos Fallback (CWE-287, CWE-290)
+
+Simulates an NFSv4 attack where a server configured with `sec=krb5:sys` allows a client to bypass Kerberos authentication by negotiating down to AUTH_SYS and asserting arbitrary UIDs. Runs both a vulnerable and hardened server scenario side by side. Maps to NIST AC-3, IA-2, SC-8.
+
+```bash
+python3 demos/uid-spoof/uid_spoof_demo.py
+```
+
+See [`demos/uid-spoof/hardened_config.md`](demos/uid-spoof/hardened_config.md) for the `/etc/exports` fix.
 
 ---
 
@@ -134,17 +148,26 @@ Each demo is mapped to a NIST SP 800-53 control and a CVE or CWE entry.
 
 ```
 OS-Security-Engineering/
-├── myshell.c               ← POSIX shell implementation
-├── audit/
-│   ├── README.md           ← NIST control mapping and design rationale
+├── README.md
+├── myshell.c                        ← POSIX shell with audit hooks
+├── Audit/
+│   ├── README.md                    ← NIST AU-2/AU-3/AU-9/AU-12 mapping
 │   ├── audit_logger.h
 │   ├── audit_logger.c
 │   └── shell_audit.log.sample
-└── README.md
+└── demos/
+    ├── README.md
+    ├── vuln_shell.c                 ← CWE-78 vulnerable shell (system())
+    ├── safe_shell.c                 ← hardened shell (execvp())
+    ├── exploit_demo.py              ← four injection payloads demonstrated
+    └── uid-spoof/
+        ├── README.md
+        ├── uid_spoof_demo.py        ← NFSv4 UID spoofing simulation
+        └── hardened_config.md      ← /etc/exports fix + NIST mapping
 ```
 
 ---
 
 ## Skills Demonstrated
 
-`C` · `POSIX` · `fork/exec` · `pipe/dup2` · `IPC` · `Signal Handling` · `NIST SP 800-53` · `Audit Logging` · `AES-256` · `Kerberos` · `DAC/MAC/RBAC` · `SELinux` · `NFS Security` · `CWE-78` · `Distributed Systems Security`
+`C` · `POSIX` · `fork/exec` · `pipe/dup2` · `IPC` · `Signal Handling` · `NIST SP 800-53` · `Audit Logging` · `Kerberos` · `NFS Security` · `CWE-78` · `CWE-287` · `CWE-290` · `DAC/MAC/RBAC` · `SELinux` · `Distributed Systems Security`
