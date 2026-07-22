@@ -101,10 +101,3 @@ This vulnerability pattern appears in:
 
 The fix is always the same: bypass the shell interpreter entirely by passing an argument array directly to the OS via `execve()`/`execvp()` or equivalent.
 
----
-
-## Interview Answer
-
-**"Explain the difference between `system()` and `execvp()` from a security perspective."**
-
-`system()` is vulnerable to command injection because it passes the input string to `/bin/sh -c`, which interprets shell metacharacters. An attacker who controls any part of the input can append arbitrary commands using `;`, `&&`, `|`, or subshell operators. `execvp()` bypasses the shell entirely — it passes an `argv` array directly to the kernel's `execve` syscall, so metacharacters are inert literal strings. The fix for CWE-78 in C programs is always to replace `system()` with `fork()` + `execvp()` and tokenize input before execution.
