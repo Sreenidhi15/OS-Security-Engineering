@@ -147,7 +147,7 @@ See [`demos/uid-spoof/hardened_config.md`](demos/uid-spoof/hardened_config.md) f
 ## Repository Structure
 
 ```
-OS-Security-Engineering/
+ShellGuard-POSIX-Shell-with-Exploit-Research-NIST-Controls/
 ├── README.md
 ├── myshell.c                        ← POSIX shell with audit hooks
 ├── Audit/
