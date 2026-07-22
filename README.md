@@ -1,4 +1,4 @@
-# OS Security Engineering — POSIX Shell & Security Research
+# ShellGuard — POSIX Shell with Exploit Research & NIST Controls
 
 **Language:** C | **Platform:** Linux (POSIX-compliant)
 
